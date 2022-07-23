@@ -40,23 +40,18 @@ jobs:
         run: |
           python3 setup.py sdist bdist_wheel
           SDIST=$(ls ./dist/*.tar.gz)
+          echo "SDIST: ${SDIST}"
           echo "::set-output name=sdist::${SDIST}"
           WHEEL=$(ls ./dist/*.whl)
+          echo "WHEEL: ${WHEEL}"
           echo "::set-output name=wheel::${WHEEL}"
       - name: version
         run: |
           VERSION=$( python3 setup.py --version )
+          echo "VERSION: ${VERSION}"
           echo "::set-output name=version::${VERSION}"
         id: version
       - name: release
-        # uses: actions/create-release@v1
-        # id: create_release
-        # with:
-        #   draft: false
-        #   prerelease: false
-        #   release_name: ${{ steps.version.outputs.version }}
-        #   tag_name: ${{ github.ref }}
-        #   #body_path: CHANGELOG.md
         run: |
           URL=$( hub release create -m ${{ steps.version.outputs.version }} "release_"${{ steps.version.outputs.version }} )
           echo "URL: ${URL}"
@@ -65,8 +60,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: debug-info
         run: |
-          echo "VERSION: $( python3 setup.py --version )"
-          echo "upload_url: "${{ steps.create_release.outputs.upload_url }}
+          echo "VERSION: "${{ steps.release.outputs.upload_url }}
+          echo "upload_url: "${{ steps.release.outputs.upload_url }}
           echo "asset_name:"
           echo "  sdist: "${{ steps.build.outputs.sdist }}
           echo "  wheel: "${{ steps.build.outputs.wheel }}
@@ -77,7 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: ./dist/${{ steps.build.outputs.sdist }}
           asset_name: ${{ steps.build.outputs.sdist }}
           asset_content_type: application/x-gtar
@@ -86,7 +81,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: ./dist/${{ steps.build.outputs.wheel }}
           asset_name: ${{ steps.build.outputs.wheel }}
           asset_content_type: application/x-wheel+zip
