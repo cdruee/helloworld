@@ -30,7 +30,7 @@ jobs:
 
 
   build_release:
-    needs: build
+    needs: run_test
 
     runs-on: ubuntu-latest
     steps:
