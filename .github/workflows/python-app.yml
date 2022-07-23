@@ -76,7 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - id: upload_sdist
         name: Attach source distribution
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -86,7 +86,7 @@ jobs:
           asset_content_type: application/x-gtar
       - id: upload_wheel
         name: Attach wheel distribution
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
