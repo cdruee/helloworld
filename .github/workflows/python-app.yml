@@ -45,14 +45,17 @@ jobs:
         run: echo "::set-output name=version::$(python3 setup.py --version)"
         id: version
       - name: release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
-          #body_path: CHANGELOG.md
+        # uses: actions/create-release@v1
+        # id: create_release
+        # with:
+        #   draft: false
+        #   prerelease: false
+        #   release_name: ${{ steps.version.outputs.version }}
+        #   tag_name: ${{ github.ref }}
+        #   #body_path: CHANGELOG.md
+        run: |
+          VERSION=$( python3 setup.py --version )
+          hub release create -m $VERSION "$(date +%Y%m%d%H%M%S)"
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload sdist artifact
