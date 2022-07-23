@@ -51,7 +51,7 @@ jobs:
       - id: pre
         name: Check if Pre-Release
         run: |
-          if [[ ${{ env.GITHUB_REF }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          if [[ $GITHUB_REF =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
               echo ":set-output name=ispre::false"
           else
               echo "::set-output name=ispre::true"
