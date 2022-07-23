@@ -73,7 +73,7 @@ jobs:
           echo "  wheel: "${{ steps.build.outputs.wheel }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - id: upload sdist artifact
+      - id: upload_sdist
         name: Attach source distribution
         uses: actions/upload-release-asset@v1
         env:
@@ -83,7 +83,7 @@ jobs:
           asset_path: ./dist/${{ steps.build.outputs.sdist }}
           asset_name: ${{ steps.build.outputs.sdist }}
           asset_content_type: application/x-gtar
-      - id: upload wheel artifact
+      - id: upload_wheel
         name: Attach wheel distribution
         uses: actions/upload-release-asset@v1
         env:
