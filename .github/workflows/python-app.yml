@@ -15,17 +15,21 @@ jobs:
   run_test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
+    - id: checkout
+      uses: actions/checkout@v3
+    - id: setup
+      name: Set up Python
       uses: actions/setup-python@v3
       with:
         python-version: "3.x"
-    - name: Install dependencies
+    - id: requirements
+      name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest tox
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Run tests with tox
+    - id: tox
+      name: Run tests with tox
       run: tox
 
 
@@ -34,9 +38,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - id: checkout
         uses: actions/checkout@v3
-      - name: build
+      - id: build
+        name: Build Packages
         run: |
           python3 setup.py sdist bdist_wheel
           SDIST=$(ls ./dist/*.tar.gz)
@@ -45,20 +50,22 @@ jobs:
           WHEEL=$(ls ./dist/*.whl)
           echo "WHEEL: ${WHEEL}"
           echo "::set-output name=wheel::${WHEEL}"
-      - name: version
+      - id: version
+        name: Extract Version Number
         run: |
           VERSION=$( python3 setup.py --version )
           echo "VERSION: ${VERSION}"
           echo "::set-output name=version::${VERSION}"
         id: version
-      - name: release
+      - id: release
+        name: Create a release
         run: |
           URL=$( hub release create -m ${{ steps.version.outputs.version }} "release_"${{ steps.version.outputs.version }} )
           echo "URL: ${URL}"
           echo "::set-output name=upload_url::${URL}"
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: debug-info
+      - id: debug-info
         run: |
           echo "VERSION: "${{ steps.release.outputs.upload_url }}
           echo "upload_url: "${{ steps.release.outputs.upload_url }}
@@ -67,7 +74,8 @@ jobs:
           echo "  wheel: "${{ steps.build.outputs.wheel }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: upload sdist artifact
+      - id: upload sdist artifact
+        name: Attach source distribution
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -76,7 +84,8 @@ jobs:
           asset_path: ./dist/${{ steps.build.outputs.sdist }}
           asset_name: ${{ steps.build.outputs.sdist }}
           asset_content_type: application/x-gtar
-      - name: upload wheel artifact
+      - id: upload wheel artifact
+        name: Attach wheel distribution
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
