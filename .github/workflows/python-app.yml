@@ -39,10 +39,14 @@ jobs:
       - name: build
         run: |
           python3 setup.py sdist bdist_wheel
-          echo "::set-output name=sdist::$(ls dist/*.tar.gz)"
-          echo "::set-output name=wheel::$(ls dist/*.whl)"
+          SDIST=$(ls ./dist/*.tar.gz)
+          echo "::set-output name=sdist::${SDIST}"
+          WHEEL=$(ls ./dist/*.whl)
+          echo "::set-output name=wheel::${WHEEL}"
       - name: version
-        run: echo "::set-output name=version::$(python3 setup.py --version)"
+        run: |
+          VERSION=$( python3 setup.py --version )
+          echo "::set-output name=version::${VERSION}"
         id: version
       - name: release
         # uses: actions/create-release@v1
@@ -54,8 +58,8 @@ jobs:
         #   tag_name: ${{ github.ref }}
         #   #body_path: CHANGELOG.md
         run: |
-          VERSION=$( python3 setup.py --version )
-          hub release create -m $VERSION "$(date +%Y%m%d%H%M%S)"
+          URL=$( hub release create -m ${{ steps.version.outputs.version }} "$(date +%Y%m%d%H%M%S)" )
+          echo "::set-output name=upload_url::${URL}"
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: debug-info
