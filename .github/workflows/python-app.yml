@@ -44,7 +44,7 @@ jobs:
           WHEEL=$(ls ./dist/*.whl)
           echo "::set-output name=wheel::${WHEEL}"
       - name: version
-        run:
+        run: |
           VERSION=$( python3 setup.py --version )
           echo "::set-output name=version::${VERSION}"
         id: version
@@ -57,13 +57,14 @@ jobs:
         #   release_name: ${{ steps.version.outputs.version }}
         #   tag_name: ${{ github.ref }}
         #   #body_path: CHANGELOG.md
-        run:
+        run: |
           URL=$( hub release create -m ${{ steps.version.outputs.version }} "release_"${{ steps.version.outputs.version }} )
+          echo "URL: ${URL}"
           echo "::set-output name=upload_url::${URL}"
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: debug-info
-        run:
+        run: |
           echo "VERSION: $( python3 setup.py --version )"
           echo "upload_url: "${{ steps.create_release.outputs.upload_url }}
           echo "asset_name:"
