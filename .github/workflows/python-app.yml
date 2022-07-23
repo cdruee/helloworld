@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
       - name: build
         run: |
-          python3 setup.py sdist wheel
+          python3 setup.py sdist bdist_wheel
           echo "::set-output name=sdist::$(ls dist/*.tar.gz)"
           echo "::set-output name=wheel::$(ls dist/*.whl)"
       - name: version
