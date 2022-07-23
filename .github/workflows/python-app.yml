@@ -56,7 +56,6 @@ jobs:
           VERSION=$( python3 setup.py --version )
           echo "VERSION: ${VERSION}"
           echo "::set-output name=version::${VERSION}"
-        id: version
       - id: release
         name: Create a release
         run: |
