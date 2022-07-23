@@ -54,11 +54,17 @@ jobs:
         #   tag_name: ${{ github.ref }}
         #   #body_path: CHANGELOG.md
         run: |
-          echo "bla1"
           VERSION=$( python3 setup.py --version )
-          echo "bla2"
           hub release create -m $VERSION "$(date +%Y%m%d%H%M%S)"
-          echo "bla3"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: debug-info
+        run: |
+          echo "VERSION: $( python3 setup.py --version )"
+          echo "upload_url: "${{ steps.create_release.outputs.upload_url }}
+          echo "asset_name:"
+          echo "  sdist: "${{ steps.build.outputs.sdist }}
+          echo "  wheel: "${{ steps.build.outputs.wheel }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload sdist artifact
