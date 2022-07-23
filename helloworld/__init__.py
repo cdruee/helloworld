@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
-Just a dummy
+This is just a skeleton module
 '''
 
 from ._version import __title__, __description__, __url__, __version__
