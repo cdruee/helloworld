@@ -48,10 +48,21 @@ jobs:
           echo "::set-output name=sdist::${SDIST}"
           WHEEL=$(ls ./dist/*.whl)
           echo "::set-output name=wheel::${WHEEL}"
+      - id: pre
+        name: Check if Pre-Release
+        run: |
+          if [[ ${{ GITHUB_REF }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo ":set-output name=ispre::false"
+          else
+              echo "::set-output name=ispre::true"
+          fi
+          echo "::set-output name=wheel::${WHEEL}"
       - id: release
-        name: Creat Release
+        name: Create Release
         uses: softprops/action-gh-release@v1
+        prerelease: ${{ steps.pre.outputs.ispre }}
         with:
           files: |
             ${{ steps.build.outputs.sdist }}
             ${{ steps.build.outputs.wheel }}
+
