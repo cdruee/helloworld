@@ -44,26 +44,20 @@ jobs:
         name: Build Packages
         run: |
           python3 setup.py sdist bdist_wheel
+          VERSION=$( python3 setup.py --version )
+          echo "::set-output name=version::${VERSION}"
           SDIST=$(ls ./dist/*.tar.gz)
-          echo "SDIST: ${SDIST}"
           echo "::set-output name=sdist::${SDIST}"
           WHEEL=$(ls ./dist/*.whl)
-          echo "WHEEL: ${WHEEL}"
           echo "::set-output name=wheel::${WHEEL}"
-      - id: version
-        name: Extract Version Number
-        run: |
-          VERSION=$( python3 setup.py --version )
-          echo "VERSION: ${VERSION}"
-          echo "::set-output name=version::${VERSION}"
-      - id: release
-        name: Create a release
-        run: |
-          URL=$( hub release create -m ${{ steps.version.outputs.version }} "release_"${{ steps.version.outputs.version }} )
-          echo "URL: ${URL}"
-          echo "::set-output name=upload_url::${URL}"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      # - id: release
+      #   name: Create a release
+      #   run: |
+      #     URL=$( hub release create -m ${{ steps.build.outputs.version }} "release_"${{ steps.build.version }} )
+      #     echo "URL: ${URL}"
+      #     echo "::set-output name=upload_url::${URL}"
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
       - id: debug-info
         name: Show Debug Info
         run: |
@@ -72,25 +66,30 @@ jobs:
           echo "asset_name:"
           echo "  sdist: "${{ steps.build.outputs.sdist }}
           echo "  wheel: "${{ steps.build.outputs.wheel }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - id: upload_sdist
-        name: Attach source distribution
-        uses: actions/upload-release-asset@v3
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      # - id: upload_sdist
+      #   name: Attach source distribution
+      #   uses: actions/upload-release-asset
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     upload_url: ${{ steps.release.outputs.upload_url }}
+      #     asset_path: ${{ steps.build.outputs.sdist }}
+      #     asset_name: ${{ steps.build.outputs.sdist }}
+      #     asset_content_type: application/x-gtar
+      # - id: upload_wheel
+      #   name: Attach wheel distribution
+      #   uses: actions/upload-release-asset
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     upload_url: ${{ steps.release.outputs.upload_url }}
+      #     asset_path: ${{ steps.build.outputs.wheel }}
+      #     asset_name: ${{ steps.build.outputs.wheel }}
+      #     asset_content_type: application/x-wheel+zip
+      - id: release
+        name: Creat Release
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.build.outputs.sdist }}
-          asset_name: ${{ steps.build.outputs.sdist }}
-          asset_content_type: application/x-gtar
-      - id: upload_wheel
-        name: Attach wheel distribution
-        uses: actions/upload-release-asset@v3
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.build.outputs.wheel }}
-          asset_name: ${{ steps.build.outputs.wheel }}
-          asset_content_type: application/x-wheel+zip
+          files: |
+            ${{ steps.build.outputs.sdist }}
+            ${{ steps.build.outputs.wheel }}
