@@ -1,0 +1,32 @@
+name: sphinx
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  DEFAULT_BRANCH: "master"
+
+jobs:
+  build-and-deploy:
+    name: Build and gh-pages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.x"
+    - name: Install dependencies
+      run: |
+        pip install numpy pandas sphinx
+        python setup.py build_sphinx
+        mv ./build/sphinx/html ./public
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ success() }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        force_orphan: true
