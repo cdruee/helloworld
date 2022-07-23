@@ -62,7 +62,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           prerelease: ${{ steps.pre.outputs.ispre }}
-        with:
           files: |
             ${{ steps.build.outputs.sdist }}
             ${{ steps.build.outputs.wheel }}
