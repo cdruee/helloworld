@@ -51,12 +51,12 @@ jobs:
       - id: pre
         name: Check if Pre-Release
         run: |
+          echo "GITHUB_REF: $GITHUB_REF"
           if [[ $GITHUB_REF =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
               echo ":set-output name=ispre::false"
           else
               echo "::set-output name=ispre::true"
           fi
-          echo "::set-output name=wheel::${WHEEL}"
       - id: release
         name: Create Release
         uses: softprops/action-gh-release@v1
