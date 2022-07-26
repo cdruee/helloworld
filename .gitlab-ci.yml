@@ -20,7 +20,7 @@ build_sdist:
     reports:
       dotenv: build.env 
  
- build_bdist_deb:
+build_bdist_deb:
   image: python:latest
   stage: build
   needs:     
@@ -68,9 +68,7 @@ release_release:
   script:
     - echo "Running the release job."
   needs:     
-    job: 
-      - build_sdist
-      - build_bdist_deb
+    job: build_bdist_deb
     artifacts: true 
   release:      # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
      name: '$CI_COMMIT_TAG'
