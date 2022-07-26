@@ -13,6 +13,7 @@ build_sdist:
   script:
     - python setup.py sdist
     - echo "BUILD_VERSION=$( ls dist/*tar.gz )" >> build.env
+    - echo "BUILD_JOB=${CI_JOB_ID}" >> build.env
   artifacts:
     paths:
       - dist
