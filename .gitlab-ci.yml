@@ -21,13 +21,14 @@ build_sdist:
       dotenv: build.env 
  
 build_bdist_deb:
-  image: python:latest
+  image: ubuntu:latest
   stage: build
   needs:     
     job: build_sdist
     artifacts: true 
   script:
-    - pip install stdeb
+    - apt install dh-python debhelper
+    - apt install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py bdist_deb
     - echo "BUILD_DEB_VERSION=$( ls deb_dist/*deb )" >> build.env
