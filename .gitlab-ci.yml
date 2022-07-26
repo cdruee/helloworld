@@ -1,5 +1,6 @@
-only:
-  - tags
+workflow:
+  only:
+    - tags
 
 stages:
   - build
