@@ -27,6 +27,8 @@ build_bdist_deb:
     job: build_sdist
     artifacts: true 
   script:
+    - apt install install software-properties-common
+    - sudo apt-add-repository universe
     - apt install dh-python debhelper
     - apt install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
