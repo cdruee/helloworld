@@ -21,7 +21,7 @@ build_sdist:
       dotenv: build.env 
  
 build_bdist_deb:
-  image: ubuntu:latest
+  image: ubuntu:focal
   stage: build
   needs:     
     job: build_sdist
