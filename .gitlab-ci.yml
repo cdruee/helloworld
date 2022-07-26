@@ -29,8 +29,8 @@ build_bdist_deb:
   script:
     - export DEBIAN_FRONTEND=noninteractive
     - apt update
-    - apt install dh-python debhelper
-    - apt install python3-setuptools python3-all python3-stdeb
+    - apt-get -y install dh-python debhelper
+    - apt-get  -y install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py bdist_deb
     - echo "BUILD_DEB_VERSION=$( ls deb_dist/*deb )" >> build.env
