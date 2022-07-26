@@ -27,9 +27,10 @@ build_bdist_deb:
     job: build_sdist
     artifacts: true 
   script:
+    - export DEBIAN_FRONTEND=noninteractive
     - apt update
-    - apt -y install dh-python debhelper
-    - apt -y install python3-setuptools python3-all python3-stdeb
+    - apt install dh-python debhelper
+    - apt install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py bdist_deb
     - echo "BUILD_DEB_VERSION=$( ls deb_dist/*deb )" >> build.env
