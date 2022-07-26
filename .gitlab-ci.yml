@@ -19,7 +19,25 @@ build_sdist:
       - dist
     reports:
       dotenv: build.env 
-      
+ 
+ build_bdist_deb:
+  image: python:latest
+  stage: build
+  needs:     
+    job: build_sdist
+    artifacts: true 
+  script:
+    - pip install stdeb
+    - export DEB_BUILD_OPTIONS=nocheck
+    - python3 setup.py bdist_deb
+    - echo "BUILD_DEB_VERSION=$( ls deb_dist/*deb )" >> build.env
+    - echo "BUILD_DEB_JOB=${CI_JOB_ID}" >> build.env
+  artifacts:
+    paths:
+      - deb_dist
+    reports:
+      dotenv: build.env 
+     
       
 test_latest:
   image: python:latest
@@ -50,7 +68,9 @@ release_release:
   script:
     - echo "Running the release job."
   needs:     
-    job: build_sdist
+    job: 
+      - build_sdist
+      - build_bdist_deb
     artifacts: true 
   release:      # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
      name: '$CI_COMMIT_TAG'
@@ -59,6 +79,11 @@ release_release:
      ref: '$CI_COMMIT_TAG'
      assets:
        links:
-         - name: "Python install package: ${PACKAGE_FILE}"
+         - name: "Python install package: ${BUILD_VERSION}"
            type: 'package'       
-           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_JOB}/artifacts/raw/${BUILD_VERSION}'        
+           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_JOB}/artifacts/raw/${BUILD_VERSION}'
+       links:
+         - name: "Debian/ubuntu package: ${BUILD_DEB_VERSION}"
+           type: 'package'       
+           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_DEB_JOB}/artifacts/raw/${BUILD_DEB_VERSION}'
+           
