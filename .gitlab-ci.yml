@@ -12,7 +12,7 @@ build_sdist:
   stage: build
   script:
     - python setup.py sdist
-    - echo "BUILD_VERSION=$( ls dist/*tar.gz )" >> build.env
+    - echo "BUILD_VERSION=$( cd dist && ls *tar.gz )" >> build.env
     - echo "BUILD_JOB=${CI_JOB_ID}" >> build.env
   artifacts:
     paths:
@@ -34,11 +34,12 @@ build_bdist_deb:
     - apt-get -y install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py bdist_deb
-    - echo "BUILD_DEB_VERSION=$( ls deb_dist/*deb )" >> build.env
+    - echo "BUILD_DEB_VERSION=$( cd deb_dist && ls *deb )" >> build.env
     - echo "BUILD_DEB_JOB=${CI_JOB_ID}" >> build.env
   artifacts:
     paths:
       - deb_dist
+      - dist
     reports:
       dotenv: build.env 
      
@@ -83,9 +84,9 @@ release_release:
        links:
          - name: "Python install package: ${BUILD_VERSION}"
            type: 'package'       
-           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_JOB}/artifacts/raw/${BUILD_VERSION}'
+           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_JOB}/artifacts/raw/dist/${BUILD_VERSION}'
        links:
          - name: "Debian/ubuntu package: ${BUILD_DEB_VERSION}"
            type: 'package'       
-           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_DEB_JOB}/artifacts/raw/${BUILD_DEB_VERSION}'
+           url: '${CI_PROJECT_URL}/-/jobs/${BUILD_DEB_JOB}/artifacts/raw/deb_dist/${BUILD_DEB_VERSION}'
            
