@@ -85,7 +85,6 @@ release_release:
          - name: "Python install package: ${BUILD_VERSION}"
            type: 'package'       
            url: '${CI_PROJECT_URL}/-/jobs/${BUILD_JOB}/artifacts/raw/dist/${BUILD_VERSION}'
-       links:
          - name: "Debian/ubuntu package: ${BUILD_DEB_VERSION}"
            type: 'package'       
            url: '${CI_PROJECT_URL}/-/jobs/${BUILD_DEB_JOB}/artifacts/raw/deb_dist/${BUILD_DEB_VERSION}'
