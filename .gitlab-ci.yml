@@ -30,6 +30,7 @@ build_bdist_deb:
     - export DEBIAN_FRONTEND=noninteractive
     - apt update
     - apt-get -y install dh-python debhelper
+    - apt-get -y install python-all
     - apt-get -y install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py bdist_deb
