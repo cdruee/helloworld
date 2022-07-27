@@ -12,8 +12,11 @@ build_sdist:
   stage: build
   script:
     - python setup.py sdist
+    - echo 'ls dist/*tar.gz'
+    - ls dist/*tar.gz
+    - echo 'cd dist && ls *tar.gz'
+    - echo "$( cd dist && ls *tar.gz )"
     - echo "BUILD_VERSION=$( cd dist && ls *tar.gz )" >> build.env
-    - ls -l
     - echo "BUILD_JOB=${CI_JOB_ID}" >> build.env
   artifacts:
     paths:
