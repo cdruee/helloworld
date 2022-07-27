@@ -38,12 +38,12 @@ build_bdist_deb:
     - apt-get -y install python3-setuptools python3-all python3-stdeb
     - export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py bdist_deb
+    - rm -r deb_dist/*/
     - echo "BUILD_DEB_VERSION=$( cd deb_dist && ls *deb )" >> build.env
     - echo "BUILD_DEB_JOB=${CI_JOB_ID}" >> build.env
   artifacts:
     paths:
       - deb_dist
-      - dist
     reports:
       dotenv: build.env 
 
